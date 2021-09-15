@@ -1,1 +1,1 @@
-cowpy==1.0.3
+requests==2.26.0

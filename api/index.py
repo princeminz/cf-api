@@ -1,12 +1,14 @@
 from http.server import BaseHTTPRequestHandler
-from cowpy import cow
+import requests
+import json
 
 class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
+        res = requests.get('https://codeforces.com/api/user.ratedList')
         self.send_response(200)
         self.send_header('Content-type','text/plain')
+        self.send_header('Cache-Control', 's-maxage=3600, stale-while-revalidate');
         self.end_headers()
-        message = cow.Cowacter().milk('Hello from Python from a Serverless Function!')
-        self.wfile.write(message.encode())
+        self.wfile.write(json.dumps({ user['handle']:user['organization'] for user in res.json()['result'] if 'organization' in user}).encode(encoding='utf_8'))
         return
